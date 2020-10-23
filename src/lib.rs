@@ -12,10 +12,13 @@ pub async fn get_title(url: &str) -> Result<String, Box<dyn Error>> {
   // TODO: Stop fetching once we see a boundary
   let text = reqwest::get(url).await?.text().await?;
 
-  let title = regex.captures(&text).unwrap().get(1).unwrap();
-  let title = title.as_str().to_owned();
-  let title = title.replace("\n", " ");
-  let title = htmlescape::decode_html(&title).unwrap_or(title);
-
-  Ok(title)
+  if let Some(title) = regex.captures(&text) {
+    let title = title.get(1).unwrap();
+    let title = title.as_str().to_owned();
+    let title = title.replace("\n", " ");
+    let title = htmlescape::decode_html(&title).unwrap_or(title);
+    Ok(title)
+  } else {
+    Ok(String::from(url))
+  }
 }

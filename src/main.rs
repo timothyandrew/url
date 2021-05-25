@@ -16,6 +16,12 @@ fn clap<'a>() -> App<'a, 'a> {
                 .long("markdown")
                 .takes_value(false)
                 .required(false))
+        .arg(Arg::with_name("org")
+                .help("org-mode output")
+                .short("o")
+                .long("org")
+                .takes_value(false)
+                .required(false))
         .arg(Arg::with_name("url")
                 .required(true)
                 .index(1))
@@ -35,6 +41,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     if matches.is_present("markdown") {
         println!("[{}]({})", title, url);
+    } else if matches.is_present("org") {
+        println!("[[{}][{}]]", url, title);
     } else {
         println!("{}", title);
     }
